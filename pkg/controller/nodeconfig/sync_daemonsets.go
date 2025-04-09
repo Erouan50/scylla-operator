@@ -30,9 +30,10 @@ func (ncc *Controller) syncDaemonSet(
 		return progressingConditions, controllertools.NewNonRetriable("scylla operator config doesn't yet have scyllaUtilsImage available in the status")
 	}
 	scyllaDBUtilsImage := *soc.Status.ScyllaDBUtilsImage
+	scyllaDBUtilsImagePullSecret := soc.Spec.ScyllaUtilsImagePullSecret
 
 	requiredDaemonSets := []*appsv1.DaemonSet{
-		makeNodeSetupDaemonSet(nc, ncc.operatorImage, scyllaDBUtilsImage),
+		makeNodeSetupDaemonSet(nc, ncc.operatorImage, scyllaDBUtilsImage, scyllaDBUtilsImagePullSecret),
 	}
 
 	err := controllerhelpers.Prune(

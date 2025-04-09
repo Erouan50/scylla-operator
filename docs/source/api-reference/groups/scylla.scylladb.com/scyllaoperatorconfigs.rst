@@ -81,6 +81,9 @@ object
    * - scyllaUtilsImage
      - string
      - scyllaUtilsImage is a ScyllaDB image used for running ScyllaDB utilities.
+   * - scyllaUtilsImagePullSecret
+     - string
+     - scyllaUtilsImagePullSecret is the secret name used to authenticate to the image registry
    * - unsupportedBashToolsImageOverride
      - string
      - unsupportedBashToolsImageOverride allows to adjust a generic Bash image with extra tools used by the operator for auxiliary purposes. Setting this field renders your cluster unsupported. Use at your own risk.

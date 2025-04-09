@@ -215,7 +215,7 @@ func makeRlimitsRoleBinding() *rbacv1.RoleBinding {
 	}
 }
 
-func makeNodeSetupDaemonSet(nc *scyllav1alpha1.NodeConfig, operatorImage, scyllaImage string) *appsv1.DaemonSet {
+func makeNodeSetupDaemonSet(nc *scyllav1alpha1.NodeConfig, operatorImage, scyllaImage string, scyllaImagePullSecret *string) *appsv1.DaemonSet {
 	if nc.Spec.LocalDiskSetup == nil && nc.Spec.DisableOptimizations {
 		return nil
 	}
@@ -223,6 +223,15 @@ func makeNodeSetupDaemonSet(nc *scyllav1alpha1.NodeConfig, operatorImage, scylla
 	labels := map[string]string{
 		"app.kubernetes.io/name":   naming.NodeConfigAppName,
 		naming.NodeConfigNameLabel: nc.Name,
+	}
+
+	var imagePullSecret []corev1.LocalObjectReference
+	if scyllaImagePullSecret != nil {
+		imagePullSecret = []corev1.LocalObjectReference{
+			{
+				Name: *scyllaImagePullSecret,
+			},
+		}
 	}
 
 	return &appsv1.DaemonSet{
@@ -246,10 +255,11 @@ func makeNodeSetupDaemonSet(nc *scyllav1alpha1.NodeConfig, operatorImage, scylla
 					ServiceAccountName:           naming.NodeConfigAppName,
 					AutomountServiceAccountToken: pointer.Ptr(false),
 					// Required for getting the right iface name to tune
-					HostNetwork:  true,
-					NodeSelector: nc.Spec.Placement.NodeSelector,
-					Affinity:     &nc.Spec.Placement.Affinity,
-					Tolerations:  nc.Spec.Placement.Tolerations,
+					HostNetwork:      true,
+					NodeSelector:     nc.Spec.Placement.NodeSelector,
+					Affinity:         &nc.Spec.Placement.Affinity,
+					Tolerations:      nc.Spec.Placement.Tolerations,
+					ImagePullSecrets: imagePullSecret,
 					Volumes: []corev1.Volume{
 						{
 							Name: "hostfs",

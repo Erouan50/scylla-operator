@@ -41,6 +41,9 @@ spec:
                 scyllaUtilsImage:
                   description: scyllaUtilsImage is a ScyllaDB image used for running ScyllaDB utilities.
                   type: string
+                scyllaUtilsImagePullSecret:
+                  description: scyllaUtilsImagePullSecret is the secret name used to authenticate to the image registry
+                  type: string
                 unsupportedBashToolsImageOverride:
                   description: unsupportedBashToolsImageOverride allows to adjust a generic Bash image with extra tools used by the operator for auxiliary purposes. Setting this field renders your cluster unsupported. Use at your own risk.
                   type: string
