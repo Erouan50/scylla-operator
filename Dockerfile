@@ -13,7 +13,8 @@ LABEL org.opencontainers.image.title="Scylla Operator" \
       org.opencontainers.image.url="https://hub.docker.com/r/scylladb/scylla-operator" \
       org.opencontainers.image.vendor="ScyllaDB"
 
-RUN microdnf install -y procps-ng && \
+# Install util-linux because node-setup needs mkfs
+RUN microdnf install -y procps-ng util-linux && \
     microdnf clean all && \
     rm -rf /var/cache/dnf/*
 
